@@ -2,6 +2,8 @@
 
 A sample Android project demonstrating the **NavEntryScope** pattern for sharing dependencies across multiple ViewModels on the same screen.
 
+To learn more, check out the droidcon Italy Slides: [Slide Deck](https://bit.ly/NavEntryScopeSlides)
+
 ## What is NavEntryScope?
 
 In single-activity Android apps with Compose navigation, screens often have multiple ViewModels that need to share data. The existing Hilt scopes don't fit this use case well:
