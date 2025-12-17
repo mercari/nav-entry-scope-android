@@ -1,6 +1,6 @@
-# NavEntryScope Sample
+# NavEntryScope library and annotation processor
 
-A sample Android project demonstrating the **NavEntryScope** pattern for sharing dependencies across multiple ViewModels on the same screen.
+This project offers an implementation for the **NavEntryScope** pattern used for sharing dependencies across multiple ViewModels on the same screen, along with a sample app.
 
 To learn more, check out the droidcon Italy Slides: [Slide Deck](https://bit.ly/NavEntryScopeSlides)
 
@@ -92,4 +92,4 @@ If you want to submit a PR for bug fixes or documentation, please read the [CONT
 
 ## License
 
-sample-nav-entry-scope-android is released under the [MIT License](LICENSE.txt).
+nav-entry-scope-android is released under the [MIT License](LICENSE.txt).
