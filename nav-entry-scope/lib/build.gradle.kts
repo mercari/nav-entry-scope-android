@@ -71,8 +71,8 @@ afterEvaluate {
             create<MavenPublication>("release") {
                 from(components["release"])
 
-                groupId = "com.mercari.nav-entry-scope"
-                artifactId = "lib"
+                groupId = "com.mercari"
+                artifactId = "nav-entry-scope"
                 version = "1.0.0"
 
                 pom {

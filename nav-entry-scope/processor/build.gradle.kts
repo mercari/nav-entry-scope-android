@@ -26,8 +26,8 @@ dependencies {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "com.mercari.nav-entry-scope"
-            artifactId = "processor"
+            groupId = "com.mercari"
+            artifactId = "nav-entry-scope-processor"
             version = "1.0.0"
 
             from(components["java"])
