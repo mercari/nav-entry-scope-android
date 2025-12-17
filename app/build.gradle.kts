@@ -69,8 +69,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(platform(libs.androidx.compose.bom))
 
-    implementation(project(":nav-entry-scope-lib"))
-    ksp(project(":nav-entry-scope-processor"))
+    implementation(libs.navEntryScopeLib)
+    ksp(libs.navEntryScopeProcessor)
 
     // Hilt dependencies
     implementation(libs.hilt.android)
