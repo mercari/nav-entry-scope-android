@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
     id("kotlin-kapt")
+    `maven-publish`
 }
 
 android {
@@ -32,6 +33,13 @@ android {
     buildFeatures {
         compose = true
     }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 kotlin {
@@ -55,4 +63,23 @@ dependencies {
     kapt(libs.hilt.compiler)
 
     testImplementation(libs.junit)
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
+
+                groupId = "com.mercari"
+                artifactId = "nav-entry-scope"
+                version = "1.0.0"
+
+                pom {
+                    name.set("NavEntryScope Library")
+                    description.set("Core library for NavEntryScope pattern")
+                }
+            }
+        }
+    }
 }
