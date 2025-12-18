@@ -28,11 +28,15 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Run App tests
-      run: ./gradlew :app:testDebugUnitTest
-
     - name: Run Library tests
       run: ./gradlew :nav-entry-scope:lib:testDebugUnitTest
 
     - name: Run Processor tests
       run: ./gradlew :nav-entry-scope:processor:test
+
+    - name: Publish library modules to Maven Local
+      run: |
+        ./gradlew publishToMavenLocal
+
+    - name: Run App tests
+      run: ./gradlew :app:testDebugUnitTest
