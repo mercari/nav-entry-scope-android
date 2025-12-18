@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.hilt.android)
     id("kotlin-kapt")
     `maven-publish`
-    jacoco
 }
 
 android {
@@ -22,9 +21,6 @@ android {
     }
 
     buildTypes {
-        debug {
-            enableUnitTestCoverage = true
-        }
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -86,18 +82,4 @@ afterEvaluate {
             }
         }
     }
-}
-
-tasks.register<JacocoReport>("jacocoTestReport") {
-    dependsOn("testDebugUnitTest")
-
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
-        csv.required.set(true)
-    }
-
-    sourceDirectories.setFrom(files("${project.projectDir}/src/main/java"))
-    classDirectories.setFrom(files("${project.buildDir}/tmp/kotlin-classes/debug"))
-    executionData.setFrom(files("${project.buildDir}/jacoco/testDebugUnitTest.exec"))
 }
