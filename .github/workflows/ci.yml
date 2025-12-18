@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   test:
+    name: Run Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -25,11 +26,45 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Run all tests with coverage
+    - name: Run App tests
+      run: ./gradlew :app:testDebugUnitTest
+
+    - name: Run Library tests
+      run: ./gradlew :nav-entry-scope:lib:testDebugUnitTest
+
+    - name: Run Processor tests
+      run: ./gradlew :nav-entry-scope:processor:test
+
+    - name: Generate coverage reports
+      if: success()
       run: |
-        ./gradlew :app:testDebugUnitTest :app:jacocoTestReport
-        ./gradlew :nav-entry-scope:lib:testDebugUnitTest :nav-entry-scope:lib:jacocoTestReport
-        ./gradlew :nav-entry-scope:processor:test :nav-entry-scope:processor:jacocoTestReport
+        ./gradlew :app:jacocoTestReport
+        ./gradlew :nav-entry-scope:lib:jacocoTestReport
+        ./gradlew :nav-entry-scope:processor:jacocoTestReport
+
+    - name: Upload coverage reports
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-reports
+        path: |
+          app/build/reports/jacoco/testDebugUnitTest/jacocoTestReport.csv
+          nav-entry-scope/lib/build/reports/jacoco/testDebugUnitTest/jacocoTestReport.csv
+          nav-entry-scope/processor/build/reports/jacoco/test/jacocoTestReport.csv
+
+  coverage-badges:
+    name: Update Coverage Badges
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download coverage reports
+      uses: actions/download-artifact@v4
+      with:
+        name: coverage-reports
 
     - name: Generate App Coverage Badge
       uses: cicirello/jacoco-badge-generator@v2
@@ -56,7 +91,6 @@ jobs:
         coverage-badge-filename: coverage-processor.svg
 
     - name: Commit and push badges
-      if: github.ref == 'refs/heads/main'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
