@@ -6,22 +6,22 @@ on:
   pull_request:
     branches: [ main ]
 
-permissions:
-  contents: write
-
 jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      run: |
+        git clone https://github.com/${{ github.repository }}.git .
+        git checkout ${{ github.sha }}
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openjdk-17-jdk
+        echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
@@ -34,66 +34,3 @@ jobs:
 
     - name: Run Processor tests
       run: ./gradlew :nav-entry-scope:processor:test
-
-    - name: Generate coverage reports
-      if: success()
-      run: |
-        ./gradlew :app:jacocoTestReport
-        ./gradlew :nav-entry-scope:lib:jacocoTestReport
-        ./gradlew :nav-entry-scope:processor:jacocoTestReport
-
-    - name: Upload coverage reports
-      if: success()
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage-reports
-        path: |
-          app/build/reports/jacoco/testDebugUnitTest/jacocoTestReport.csv
-          nav-entry-scope/lib/build/reports/jacoco/testDebugUnitTest/jacocoTestReport.csv
-          nav-entry-scope/processor/build/reports/jacoco/test/jacocoTestReport.csv
-
-  coverage-badges:
-    name: Update Coverage Badges
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Download coverage reports
-      uses: actions/download-artifact@v4
-      with:
-        name: coverage-reports
-
-    - name: Generate App Coverage Badge
-      uses: cicirello/jacoco-badge-generator@v2
-      with:
-        jacoco-csv-file: app/build/reports/jacoco/testDebugUnitTest/jacocoTestReport.csv
-        badges-directory: .github/badges
-        generate-branches-badge: false
-        coverage-badge-filename: coverage-app.svg
-
-    - name: Generate Lib Coverage Badge
-      uses: cicirello/jacoco-badge-generator@v2
-      with:
-        jacoco-csv-file: nav-entry-scope/lib/build/reports/jacoco/testDebugUnitTest/jacocoTestReport.csv
-        badges-directory: .github/badges
-        generate-branches-badge: false
-        coverage-badge-filename: coverage-lib.svg
-
-    - name: Generate Processor Coverage Badge
-      uses: cicirello/jacoco-badge-generator@v2
-      with:
-        jacoco-csv-file: nav-entry-scope/processor/build/reports/jacoco/test/jacocoTestReport.csv
-        badges-directory: .github/badges
-        generate-branches-badge: false
-        coverage-badge-filename: coverage-processor.svg
-
-    - name: Commit and push badges
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add .github/badges/*.svg
-        git diff --quiet && git diff --staged --quiet || git commit -m "Update coverage badges"
-        git push

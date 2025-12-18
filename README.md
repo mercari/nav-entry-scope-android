@@ -1,5 +1,6 @@
 # NavEntryScope library and annotation processor
 
+[![CI](https://github.com/mercari/sample-nav-entry-scope-android/actions/workflows/ci.yml/badge.svg)](https://github.com/mercari/sample-nav-entry-scope-android/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.txt)
 ![Android](https://img.shields.io/badge/Platform-Android-green.svg)
 ![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg)
@@ -71,7 +72,7 @@ The annotation processor automatically generates the necessary Dagger modules (`
 
 ## Project Structure
 
-### [`app`](app/) ![Coverage](.github/badges/coverage-app.svg)
+### [`app`](app/)
 Sample application demonstrating NavEntryScope usage with:
 - `SharedCounterRepository` - A `@NavEntryScoped` repository holding the shared value
 - `CounterLabelViewModel` - Displays the counter value
@@ -79,14 +80,14 @@ Sample application demonstrating NavEntryScope usage with:
 
 Both ViewModels access the same repository instance, demonstrating data sharing on a single screen.
 
-### [`nav-entry-scope/lib`](nav-entry-scope/lib/) ![Coverage](.github/badges/coverage-lib.svg)
+### [`nav-entry-scope/lib`](nav-entry-scope/lib/)
 Core library providing:
 - `@NavEntryScoped` - Scope annotation for navigation entry lifetime
 - `NavEntryComponent` - Custom Dagger component definition
 - `NavEntryComponentOwner` - ViewModel managing component lifecycle
 - `navEntryScopedViewModel()` - Compose function for injecting ViewModels with NavEntryScoped dependencies
 
-### [`nav-entry-scope/processor`](nav-entry-scope/processor/) ![Coverage](.github/badges/coverage-processor.svg)
+### [`nav-entry-scope/processor`](nav-entry-scope/processor/)
 Annotation processor (KSP) that generates:
 - `NavEntry_EntryPoint` - Hilt EntryPoint interface installed in `NavEntryComponent`
 - `NavEntry_Module` - Dagger module installed in `ViewModelComponent` that provides NavEntryScoped dependencies
