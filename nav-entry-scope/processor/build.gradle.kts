@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlin.jvm)
     `maven-publish`
+    jacoco
 }
 
 apply(from = rootProject.file("gradle/unit-test-dependencies.gradle.kts"))
@@ -32,5 +33,19 @@ publishing {
 
             from(components["java"])
         }
+    }
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(true)
     }
 }

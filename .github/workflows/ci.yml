@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Run all tests with coverage
+      run: |
+        ./gradlew :app:testDebugUnitTest :app:jacocoTestReport
+        ./gradlew :nav-entry-scope:lib:testDebugUnitTest :nav-entry-scope:lib:jacocoTestReport
+        ./gradlew :nav-entry-scope:processor:test :nav-entry-scope:processor:jacocoTestReport
+
+    - name: Generate App Coverage Badge
+      uses: cicirello/jacoco-badge-generator@v2
+      with:
+        jacoco-csv-file: app/build/reports/jacoco/testDebugUnitTest/jacocoTestReport.csv
+        badges-directory: .github/badges
+        generate-branches-badge: false
+        coverage-badge-filename: coverage-app.svg
+
+    - name: Generate Lib Coverage Badge
+      uses: cicirello/jacoco-badge-generator@v2
+      with:
+        jacoco-csv-file: nav-entry-scope/lib/build/reports/jacoco/testDebugUnitTest/jacocoTestReport.csv
+        badges-directory: .github/badges
+        generate-branches-badge: false
+        coverage-badge-filename: coverage-lib.svg
+
+    - name: Generate Processor Coverage Badge
+      uses: cicirello/jacoco-badge-generator@v2
+      with:
+        jacoco-csv-file: nav-entry-scope/processor/build/reports/jacoco/test/jacocoTestReport.csv
+        badges-directory: .github/badges
+        generate-branches-badge: false
+        coverage-badge-filename: coverage-processor.svg
+
+    - name: Commit and push badges
+      if: github.ref == 'refs/heads/main'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .github/badges/*.svg
+        git diff --quiet && git diff --staged --quiet || git commit -m "Update coverage badges"
+        git push

@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
     id("kotlin-kapt")
+    jacoco
 }
 
 apply(from = rootProject.file("gradle/unit-test-dependencies.gradle.kts"))
@@ -27,6 +28,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            enableUnitTestCoverage = true
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -101,4 +105,18 @@ afterEvaluate {
             kspExt.arg("com.mercari.naventryscope.package", moduleNamespace)
         }
     }
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(true)
+    }
+
+    sourceDirectories.setFrom(files("${project.projectDir}/src/main/java"))
+    classDirectories.setFrom(files("${project.buildDir}/tmp/kotlin-classes/debug"))
+    executionData.setFrom(files("${project.buildDir}/jacoco/testDebugUnitTest.exec"))
 }

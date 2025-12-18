@@ -66,7 +66,7 @@ The annotation processor automatically generates the necessary Dagger modules (`
 
 ## Project Structure
 
-### [`app`](app/)
+### [`app`](app/) ![Coverage](.github/badges/coverage-app.svg)
 Sample application demonstrating NavEntryScope usage with:
 - `SharedCounterRepository` - A `@NavEntryScoped` repository holding the shared value
 - `CounterLabelViewModel` - Displays the counter value
@@ -74,14 +74,14 @@ Sample application demonstrating NavEntryScope usage with:
 
 Both ViewModels access the same repository instance, demonstrating data sharing on a single screen.
 
-### [`nav-entry-scope/lib`](nav-entry-scope/lib/)
+### [`nav-entry-scope/lib`](nav-entry-scope/lib/) ![Coverage](.github/badges/coverage-lib.svg)
 Core library providing:
 - `@NavEntryScoped` - Scope annotation for navigation entry lifetime
 - `NavEntryComponent` - Custom Dagger component definition
 - `NavEntryComponentOwner` - ViewModel managing component lifecycle
 - `navEntryScopedViewModel()` - Compose function for injecting ViewModels with NavEntryScoped dependencies
 
-### [`nav-entry-scope/processor`](nav-entry-scope/processor/)
+### [`nav-entry-scope/processor`](nav-entry-scope/processor/) ![Coverage](.github/badges/coverage-processor.svg)
 Annotation processor (KSP) that generates:
 - `NavEntry_EntryPoint` - Hilt EntryPoint interface installed in `NavEntryComponent`
 - `NavEntry_Module` - Dagger module installed in `ViewModelComponent` that provides NavEntryScoped dependencies
