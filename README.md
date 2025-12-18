@@ -1,5 +1,10 @@
 # NavEntryScope library and annotation processor
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.txt)
+![Android](https://img.shields.io/badge/Platform-Android-green.svg)
+![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.0-blue.svg)
+
 This project offers an implementation for the **NavEntryScope** pattern used for sharing dependencies across multiple ViewModels on the same screen, along with a sample app.
 
 To learn more, check out the droidcon Italy Slides: [Slide Deck](https://bit.ly/NavEntryScopeSlides)
