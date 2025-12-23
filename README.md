@@ -1,6 +1,6 @@
 # NavEntryScope library and annotation processor
 
-[![CI](https://github.com/mercari/sample-nav-entry-scope-android/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mercari/sample-nav-entry-scope-android/actions/workflows/ci.yml)
+[![CI](https://github.com/mercari/nav-entry-scope-android/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mercari/nav-entry-scope-android/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.txt)
 ![Android](https://img.shields.io/badge/Platform-Android-green.svg)
 ![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg)
