@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlin.jvm)
     `maven-publish`
+    signing
 }
 
 apply(from = rootProject.file("gradle/unit-test-dependencies.gradle.kts"))
@@ -23,14 +24,25 @@ dependencies {
     implementation(libs.kotlinpoet.ksp)
 }
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+extra["navEntryScopeVersion"] = libs.versions.navEntryScope.get()
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "com.mercari"
-            artifactId = "nav-entry-scope-processor"
-            version = "1.0.0"
-
             from(components["java"])
+            artifactId = "nav-entry-scope-processor"
+            pom {
+                name.set("NavEntryScope Processor")
+                description.set("KSP annotation processor for NavEntryScope - generates scoped ViewModel factories for Jetpack Compose navigation")
+            }
         }
     }
 }
+
+apply(from = rootProject.file("gradle/publishing.gradle.kts"))
+apply(from = rootProject.file("gradle/signing.gradle.kts"))

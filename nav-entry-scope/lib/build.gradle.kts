@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.hilt.android)
     id("kotlin-kapt")
     `maven-publish`
+    signing
 }
 
 android {
@@ -65,21 +66,22 @@ dependencies {
     testImplementation(libs.junit)
 }
 
+extra["navEntryScopeVersion"] = libs.versions.navEntryScope.get()
+
 afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-
-                groupId = "com.mercari"
                 artifactId = "nav-entry-scope"
-                version = "1.0.0"
-
                 pom {
                     name.set("NavEntryScope Library")
-                    description.set("Core library for NavEntryScope pattern")
+                    description.set("Navigation entry scoping library for Jetpack Compose - manages ViewModel lifecycle tied to navigation back stack entries")
                 }
             }
         }
     }
 }
+
+apply(from = rootProject.file("gradle/publishing.gradle.kts"))
+apply(from = rootProject.file("gradle/signing.gradle.kts"))

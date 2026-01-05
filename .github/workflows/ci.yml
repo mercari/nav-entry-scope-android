@@ -12,31 +12,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      run: |
-        git init
-        git remote add origin https://github.com/${{ github.repository }}.git
-        git fetch --depth=1 origin ${{ github.sha }}
-        git checkout ${{ github.sha }}
+      - name: Checkout code
+        run: |
+          git init
+          git remote add origin https://github.com/${{ github.repository }}.git
+          git fetch --depth=1 origin ${{ github.sha }}
+          git checkout ${{ github.sha }}
 
-    - name: Set up JDK 17
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y openjdk-17-jdk
-        echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
+      - name: Set up JDK 17
+        uses: ./.github/actions/setup-jdk
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      - name: Run Library tests
+        run: ./gradlew :nav-entry-scope-lib:testDebugUnitTest
 
-    - name: Run Library tests
-      run: ./gradlew :nav-entry-scope-lib:testDebugUnitTest
+      - name: Run Processor tests
+        run: ./gradlew :nav-entry-scope-processor:test
 
-    - name: Run Processor tests
-      run: ./gradlew :nav-entry-scope-processor:test
+      - name: Publish library modules to Maven Local
+        run: ./gradlew publishToMavenLocal
 
-    - name: Publish library modules to Maven Local
-      run: |
-        ./gradlew publishToMavenLocal
-
-    - name: Run App tests
-      run: ./gradlew :app:testDebugUnitTest
+      - name: Run App tests
+        run: ./gradlew :app:testDebugUnitTest

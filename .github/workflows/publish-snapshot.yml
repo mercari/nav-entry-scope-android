@@ -1,0 +1,39 @@
+name: Publish Snapshot to Maven Central
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'nav-entry-scope/**'
+
+jobs:
+  publish-snapshot:
+    name: Publish Snapshot
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        run: |
+          git init
+          git remote add origin https://github.com/${{ github.repository }}.git
+          git fetch --depth=1 origin ${{ github.sha }}
+          git checkout ${{ github.sha }}
+
+      - name: Set up JDK 17
+        uses: ./.github/actions/setup-jdk
+
+      - name: Extract base version from version catalog
+        run: |
+          BASE_VERSION=$(grep '^navEntryScope = ' gradle/libs.versions.toml | sed 's/.*= *"\(.*\)"/\1/')
+          echo "VERSION=${BASE_VERSION}-SNAPSHOT" >> $GITHUB_ENV
+
+      - name: Publish Snapshot to Maven Central
+        run: ./gradlew publishAllPublicationsToSnapshotRepository
+        env:
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SIGNING_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.GPG_PASSPHRASE }}
+          SIGNING_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          VERSION: ${{ env.VERSION }}
