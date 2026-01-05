@@ -1,11 +1,13 @@
 name: Publish Snapshot to Maven Central
 
 on:
+  workflow_dispatch:  # Manual trigger for testing
   push:
     branches:
       - main
-    paths:
-      - 'nav-entry-scope/**'
+      - rsfez/publish  # TODO: Remove after testing
+    # paths:
+    #   - 'nav-entry-scope/**'  # TODO: Uncomment after testing
 
 jobs:
   publish-snapshot:
