@@ -10,6 +10,7 @@ plugins {
 }
 
 nexusPublishing {
+    packageGroup.set("com.mercari")
     repositories {
         sonatype {
             nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
