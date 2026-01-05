@@ -31,7 +31,7 @@ jobs:
           echo "VERSION=${BASE_VERSION}-SNAPSHOT" >> $GITHUB_ENV
 
       - name: Publish Snapshot to Maven Central
-        run: ./gradlew publishAllPublicationsToSnapshotRepository
+        run: ./gradlew publishAllPublicationsToSnapshotRepository --info
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
