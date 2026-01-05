@@ -27,11 +27,11 @@ jobs:
 
       - name: Extract base version from version catalog
         run: |
-          BASE_VERSION=$(grep 'navEntryScope' gradle/libs.versions.toml | sed 's/.*= *"\(.*\)"/\1/')
+          BASE_VERSION=$(grep '^navEntryScope = ' gradle/libs.versions.toml | sed 's/.*= *"\(.*\)"/\1/')
           echo "VERSION=${BASE_VERSION}-SNAPSHOT" >> $GITHUB_ENV
 
       - name: Publish Snapshot to Maven Central
-        run: ./gradlew publishToSonatype
+        run: ./gradlew publishAllPublicationsToSnapshotRepository
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}

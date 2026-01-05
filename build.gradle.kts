@@ -19,3 +19,20 @@ nexusPublishing {
         }
     }
 }
+
+allprojects {
+    plugins.withId("maven-publish") {
+        configure<PublishingExtension> {
+            repositories {
+                maven {
+                    name = "snapshot"
+                    url = uri("https://central.sonatype.com/repository/maven-snapshots/")
+                    credentials {
+                        username = providers.environmentVariable("SONATYPE_USERNAME").orNull ?: ""
+                        password = providers.environmentVariable("SONATYPE_PASSWORD").orNull ?: ""
+                    }
+                }
+            }
+        }
+    }
+}
