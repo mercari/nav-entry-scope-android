@@ -1,13 +1,11 @@
 name: Publish Snapshot to Maven Central
 
 on:
-  workflow_dispatch:  # Manual trigger for testing
   push:
     branches:
       - main
-      - rsfez/publish  # TODO: Remove after testing
-    # paths:
-    #   - 'nav-entry-scope/**'  # TODO: Uncomment after testing
+    paths:
+      - 'nav-entry-scope/**'
 
 jobs:
   publish-snapshot:
@@ -31,7 +29,7 @@ jobs:
           echo "VERSION=${BASE_VERSION}-SNAPSHOT" >> $GITHUB_ENV
 
       - name: Publish Snapshot to Maven Central
-        run: ./gradlew publishAllPublicationsToSnapshotRepository --info
+        run: ./gradlew publishAllPublicationsToSnapshotRepository
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
