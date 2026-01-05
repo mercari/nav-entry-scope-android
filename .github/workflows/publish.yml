@@ -9,6 +9,7 @@ jobs:
   publish:
     name: Publish to Maven Central
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
       - name: Checkout code
