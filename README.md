@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/mercari/nav-entry-scope-android/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mercari/nav-entry-scope-android/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.txt)
+[![Latest version (lib)](https://img.shields.io/maven-central/v/com.mercari/nav-entry-scope?label=nav-entry-scope)](https://central.sonatype.com/artifact/com.mercari/nav-entry-scope)
+[![Latest version (processor)](https://img.shields.io/maven-central/v/com.mercari/nav-entry-scope-processor?label=nav-entry-scope-processor)](https://central.sonatype.com/artifact/com.mercari/nav-entry-scope-processor)
 ![Android](https://img.shields.io/badge/Platform-Android-green.svg)
 ![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.0-blue.svg)
@@ -32,7 +34,20 @@ Use NavEntryScope when you have:
 
 ## How to Use
 
-### 1. Annotate Shared Dependencies
+### 1. Add Dependencies
+
+Add the library and annotation processor to your module's `build.gradle.kts`:
+
+```kotlin
+dependencies {
+    implementation("com.mercari:nav-entry-scope:<version>")
+    ksp("com.mercari:nav-entry-scope-processor:<version>")
+}
+```
+
+Replace `<version>` with the latest version shown in the badge above.
+
+### 2. Annotate Shared Dependencies
 
 ```kotlin
 @Module
@@ -45,7 +60,7 @@ interface YourModule {
 }
 ```
 
-### 2. Inject into ViewModels
+### 3. Inject into ViewModels
 
 ViewModels remain standard `@HiltViewModel` classes. Injecting a dependency that depends on `@NavEntryScoped` into your ViewModel is also supported.
 
@@ -56,7 +71,7 @@ class YourViewModel @Inject constructor(
 ) : ViewModel()
 ```
 
-### 3. Use in Compose
+### 4. Use in Compose
 
 Replace `hiltViewModel()` with `navEntryScopedViewModel()`:
 
@@ -91,6 +106,38 @@ Core library providing:
 Annotation processor (KSP) that generates:
 - `NavEntry_EntryPoint` - Hilt EntryPoint interface installed in `NavEntryComponent`
 - `NavEntry_Module` - Dagger module installed in `ViewModelComponent` that provides NavEntryScoped dependencies
+
+## Local Development
+
+### Testing Changes Locally
+
+To test library changes immediately in the sample app, publish to Maven Local:
+
+```bash
+./gradlew publishToMavenLocal
+```
+
+The sample app is already configured to use `mavenLocal()`, so changes will be picked up on the next build.
+
+### Using Snapshots
+
+To use snapshot versions of the library, add the snapshot repository to your `settings.gradle.kts`:
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        maven("https://central.sonatype.com/repository/maven-snapshots/")
+        mavenCentral()
+    }
+}
+```
+
+Then use the snapshot version in your dependencies:
+
+```kotlin
+implementation("com.mercari:nav-entry-scope:<version>-SNAPSHOT")
+ksp("com.mercari:nav-entry-scope-processor:<version>-SNAPSHOT")
+```
 
 ## Contribution
 
