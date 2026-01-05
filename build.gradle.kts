@@ -1,4 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+val signingProperties = java.util.Properties().apply {
+    file("signing.local").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+}
+
+fun getSigningProperty(key: String): String? =
+    providers.environmentVariable(key).orNull ?: signingProperties.getProperty(key)
+
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -15,8 +23,8 @@ nexusPublishing {
         sonatype {
             nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
             snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
-            username.set(providers.environmentVariable("SONATYPE_USERNAME"))
-            password.set(providers.environmentVariable("SONATYPE_PASSWORD"))
+            username.set(getSigningProperty("SONATYPE_USERNAME"))
+            password.set(getSigningProperty("SONATYPE_PASSWORD"))
         }
     }
 }
@@ -29,8 +37,8 @@ allprojects {
                     name = "snapshot"
                     url = uri("https://central.sonatype.com/repository/maven-snapshots/")
                     credentials {
-                        username = providers.environmentVariable("SONATYPE_USERNAME").orNull ?: ""
-                        password = providers.environmentVariable("SONATYPE_PASSWORD").orNull ?: ""
+                        username = getSigningProperty("SONATYPE_USERNAME") ?: ""
+                        password = getSigningProperty("SONATYPE_PASSWORD") ?: ""
                     }
                 }
             }
