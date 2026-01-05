@@ -1,0 +1,16 @@
+name: 'Setup JDK 17'
+description: 'Install and configure JDK 17'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up JDK 17
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openjdk-17-jdk
+        echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
+
+    - name: Grant execute permission for gradlew
+      shell: bash
+      run: chmod +x gradlew

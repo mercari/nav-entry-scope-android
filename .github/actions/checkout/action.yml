@@ -1,0 +1,13 @@
+name: 'Checkout'
+description: 'Checkout repository code'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      shell: bash
+      run: |
+        git init
+        git remote add origin https://github.com/${{ github.repository }}.git
+        git fetch --depth=1 origin ${{ github.sha }}
+        git checkout ${{ github.sha }}
