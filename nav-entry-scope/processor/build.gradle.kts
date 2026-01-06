@@ -45,4 +45,3 @@ publishing {
 }
 
 apply(from = rootProject.file("gradle/publishing.gradle.kts"))
-apply(from = rootProject.file("gradle/signing.gradle.kts"))
