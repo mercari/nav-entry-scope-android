@@ -31,7 +31,7 @@ jobs:
           ./gradlew :nav-entry-scope-processor:test
 
       - name: Publish to Maven Central
-        run: ./gradlew publishAndReleaseToMavenCentral
+        run: ./gradlew publishAndReleaseToMavenCentral -PPUBLISH_VERSION=${{ env.VERSION }}
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}

@@ -1,8 +1,8 @@
 // Shared publishing configuration for Vanniktech Maven Publish plugin
 // Secrets are loaded from ~/.gradle/gradle.properties (see README for required keys)
 
-// Get version from VERSION property or fall back to navEntryScopeVersion
-val publishVersion = providers.gradleProperty("VERSION").orNull
+// Get version from PUBLISH_VERSION property or fall back to navEntryScopeVersion
+val publishVersion = providers.gradleProperty("PUBLISH_VERSION").orNull
     ?: project.property("navEntryScopeVersion") as String
 project.extra.set("publishVersion", publishVersion)
 

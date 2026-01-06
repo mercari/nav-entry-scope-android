@@ -30,7 +30,7 @@ apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
 val hasSigningCredentials = extra["hasSigningCredentials"] as Boolean
 @Suppress("UNCHECKED_CAST")
-val configurePom = extra["configurePom"] as (org.gradle.api.publish.maven.MavenPom) -> Unit
+val configurePom = extra["configurePom"] as (MavenPom) -> Unit
 
 mavenPublishing {
     configure(JavaLibrary(javadocJar = JavadocJar.Javadoc(), sourcesJar = true))
