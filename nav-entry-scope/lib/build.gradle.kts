@@ -65,10 +65,15 @@ apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 @Suppress("UNCHECKED_CAST")
 val configurePom = extra["configurePom"] as (org.gradle.api.publish.maven.MavenPom) -> Unit
 
+val hasSigningCredentials = project.findProperty("signingInMemoryKey") != null
+
 mavenPublishing {
     configure(AndroidSingleVariantLibrary(variant = "release", sourcesJar = true, publishJavadocJar = true))
-    publishToMavenCentral()
-    signAllPublications()
+
+    if (hasSigningCredentials) {
+        publishToMavenCentral()
+        signAllPublications()
+    }
 
     coordinates("com.mercari", "nav-entry-scope", extra["publishVersion"] as String)
 
