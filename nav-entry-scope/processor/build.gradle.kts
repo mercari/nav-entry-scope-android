@@ -1,9 +1,10 @@
+import com.vanniktech.maven.publish.JavaLibrary
+import com.vanniktech.maven.publish.JavadocJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    `maven-publish`
-    signing
+    alias(libs.plugins.maven.publish)
 }
 
 apply(from = rootProject.file("gradle/unit-test-dependencies.gradle.kts"))
@@ -24,24 +25,22 @@ dependencies {
     implementation(libs.kotlinpoet.ksp)
 }
 
-java {
-    withSourcesJar()
-    withJavadocJar()
-}
-
 extra["navEntryScopeVersion"] = libs.versions.navEntryScope.get()
+apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-            artifactId = "nav-entry-scope-processor"
-            pom {
-                name.set("NavEntryScope Processor")
-                description.set("KSP annotation processor for NavEntryScope - generates scoped ViewModel factories for Jetpack Compose navigation")
-            }
-        }
+@Suppress("UNCHECKED_CAST")
+val configurePom = extra["configurePom"] as (org.gradle.api.publish.maven.MavenPom) -> Unit
+
+mavenPublishing {
+    configure(JavaLibrary(javadocJar = JavadocJar.Javadoc(), sourcesJar = true))
+    publishToMavenCentral()
+    signAllPublications()
+
+    coordinates("com.mercari", "nav-entry-scope-processor", extra["publishVersion"] as String)
+
+    pom {
+        name.set("NavEntryScope Processor")
+        description.set("KSP annotation processor for NavEntryScope - generates scoped ViewModel factories for Jetpack Compose navigation")
+        configurePom(this)
     }
 }
-
-apply(from = rootProject.file("gradle/publishing.gradle.kts"))
