@@ -1,68 +1,43 @@
-import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.plugins.signing.SigningExtension
+// Shared publishing configuration for Vanniktech Maven Publish plugin
+// Secrets are loaded from ~/.gradle/gradle.properties (see README for required keys)
 
-val signingProperties = java.util.Properties().apply {
-    rootProject.file("signing.local").takeIf { it.exists() }?.inputStream()?.use { load(it) }
-}
+// Get version from VERSION property or fall back to navEntryScopeVersion
+val publishVersion = providers.gradleProperty("VERSION").orNull
+    ?: project.property("navEntryScopeVersion") as String
+project.extra.set("publishVersion", publishVersion)
 
-fun getSigningProperty(key: String): String? =
-    System.getenv(key) ?: signingProperties.getProperty(key)
+// Support both in-memory signing (CI) and file-based signing (local)
+val hasSigningCredentials = project.findProperty("signingInMemoryKey") != null
+    || project.findProperty("signing.secretKeyRingFile") != null
+project.extra.set("hasSigningCredentials", hasSigningCredentials)
 
-fun getSigningPropertyWithNewlines(key: String): String? =
-    System.getenv(key) ?: signingProperties.getProperty(key)?.replace("\\n", "\n")
+// Shared POM configuration function - available via extra properties
+project.extra.set("configurePom") { pom: org.gradle.api.publish.maven.MavenPom ->
+    pom.apply {
+        url.set("https://github.com/mercari/nav-entry-scope-android")
 
-extra["signingProperties"] = signingProperties
-extra["getSigningProperty"] = ::getSigningProperty
-
-plugins.withId("maven-publish") {
-    afterEvaluate {
-        extensions.configure<PublishingExtension> {
-            publications.withType<MavenPublication>().configureEach {
-                groupId = "com.mercari"
-                version = getSigningProperty("VERSION") ?: project.property("navEntryScopeVersion") as String
-
-                pom {
-                    url.set("https://github.com/mercari/nav-entry-scope-android")
-
-                    licenses {
-                        license {
-                            name.set("MIT License")
-                            url.set("https://github.com/mercari/nav-entry-scope-android/blob/main/LICENSE.txt")
-                        }
-                    }
-                    developers {
-                        developer {
-                            id.set("bxttx")
-                            name.set("Luca Bettelli")
-                            email.set("l-bettelli@mercari.com")
-                        }
-                        developer {
-                            id.set("rsfez")
-                            name.set("Robin Sfez")
-                            email.set("rsfez@mercari.com")
-                        }
-                    }
-                    scm {
-                        connection.set("scm:git:git://github.com/mercari/nav-entry-scope-android.git")
-                        developerConnection.set("scm:git:ssh://github.com/mercari/nav-entry-scope-android.git")
-                        url.set("https://github.com/mercari/nav-entry-scope-android")
-                    }
-                }
+        licenses {
+            license {
+                name.set("MIT License")
+                url.set("https://github.com/mercari/nav-entry-scope-android/blob/main/LICENSE.txt")
             }
         }
-    }
-
-    plugins.withId("signing") {
-        val publishing = extensions.getByType<PublishingExtension>()
-        val signing = extensions.getByType<SigningExtension>()
-
-        val signingKey = getSigningPropertyWithNewlines("SIGNING_KEY")
-        val signingPassword = getSigningProperty("SIGNING_PASSWORD")
-
-        if (signingKey != null && signingPassword != null) {
-            signing.useInMemoryPgpKeys(signingKey, signingPassword)
-            signing.sign(publishing.publications)
+        developers {
+            developer {
+                id.set("bxttx")
+                name.set("Luca Bettelli")
+                email.set("l-bettelli@mercari.com")
+            }
+            developer {
+                id.set("rsfez")
+                name.set("Robin Sfez")
+                email.set("rsfez@mercari.com")
+            }
+        }
+        scm {
+            connection.set("scm:git:git://github.com/mercari/nav-entry-scope-android.git")
+            developerConnection.set("scm:git:ssh://github.com/mercari/nav-entry-scope-android.git")
+            url.set("https://github.com/mercari/nav-entry-scope-android")
         }
     }
 }

@@ -1,3 +1,4 @@
+import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -5,9 +6,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.maven.publish)
     id("kotlin-kapt")
-    `maven-publish`
-    signing
 }
 
 android {
@@ -33,13 +33,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-            withJavadocJar()
-        }
     }
 }
 
@@ -67,20 +60,25 @@ dependencies {
 }
 
 extra["navEntryScopeVersion"] = libs.versions.navEntryScope.get()
+apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("release") {
-                from(components["release"])
-                artifactId = "nav-entry-scope"
-                pom {
-                    name.set("NavEntryScope Library")
-                    description.set("Navigation entry scoping library for Jetpack Compose - manages ViewModel lifecycle tied to navigation back stack entries")
-                }
-            }
-        }
+val hasSigningCredentials = extra["hasSigningCredentials"] as Boolean
+@Suppress("UNCHECKED_CAST")
+val configurePom = extra["configurePom"] as (org.gradle.api.publish.maven.MavenPom) -> Unit
+
+mavenPublishing {
+    configure(AndroidSingleVariantLibrary(variant = "release", sourcesJar = true, publishJavadocJar = true))
+
+    if (hasSigningCredentials) {
+        publishToMavenCentral()
+        signAllPublications()
+    }
+
+    coordinates("com.mercari", "nav-entry-scope", extra["publishVersion"] as String)
+
+    pom {
+        name.set("NavEntryScope Library")
+        description.set("Navigation entry scoping library for Jetpack Compose - manages ViewModel lifecycle tied to navigation back stack entries")
+        configurePom(this)
     }
 }
-
-apply(from = rootProject.file("gradle/publishing.gradle.kts"))
