@@ -6,6 +6,11 @@ val publishVersion = providers.gradleProperty("VERSION").orNull
     ?: project.property("navEntryScopeVersion") as String
 project.extra.set("publishVersion", publishVersion)
 
+// Support both in-memory signing (CI) and file-based signing (local)
+val hasSigningCredentials = project.findProperty("signingInMemoryKey") != null
+    || project.findProperty("signing.secretKeyRingFile") != null
+project.extra.set("hasSigningCredentials", hasSigningCredentials)
+
 // Shared POM configuration function - available via extra properties
 project.extra.set("configurePom") { pom: org.gradle.api.publish.maven.MavenPom ->
     pom.apply {

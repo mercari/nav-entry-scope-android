@@ -62,10 +62,9 @@ dependencies {
 extra["navEntryScopeVersion"] = libs.versions.navEntryScope.get()
 apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
+val hasSigningCredentials = extra["hasSigningCredentials"] as Boolean
 @Suppress("UNCHECKED_CAST")
 val configurePom = extra["configurePom"] as (org.gradle.api.publish.maven.MavenPom) -> Unit
-
-val hasSigningCredentials = project.findProperty("signingInMemoryKey") != null
 
 mavenPublishing {
     configure(AndroidSingleVariantLibrary(variant = "release", sourcesJar = true, publishJavadocJar = true))
