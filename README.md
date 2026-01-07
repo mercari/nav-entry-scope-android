@@ -10,7 +10,7 @@
 
 This project offers an implementation for the **NavEntryScope** pattern used for sharing dependencies across multiple ViewModels on the same screen, along with a sample app.
 
-To learn more, check out the droidcon Italy Slides: [Slide Deck](https://bit.ly/NavEntryScopeSlides)
+To learn more, check out the droidcon Italy Slides: [Slide Deck](https://speakerdeck.com/bxttx/beyond-hilts-built-in-scopes-scope-shared-dependencies-to-the-current-screen)
 
 ## What is NavEntryScope?
 
