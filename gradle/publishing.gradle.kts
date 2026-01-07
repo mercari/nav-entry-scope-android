@@ -1,9 +1,16 @@
 // Shared publishing configuration for Vanniktech Maven Publish plugin
 // Secrets are loaded from ~/.gradle/gradle.properties (see README for required keys)
 
-// Get version from PUBLISH_VERSION property or fall back to navEntryScopeVersion
-val publishVersion = providers.gradleProperty("PUBLISH_VERSION").orNull
-    ?: project.property("navEntryScopeVersion") as String
+// Version must be provided via -PPUBLISH_VERSION when publishing to Maven Central
+val isMavenCentralPublish = gradle.startParameter.taskNames.any {
+    it.contains("publish", ignoreCase = true) && !it.contains("Local", ignoreCase = true)
+}
+val publishVersion = if (isMavenCentralPublish) {
+    providers.gradleProperty("PUBLISH_VERSION").orNull
+        ?: error("PUBLISH_VERSION property is required. Use -PPUBLISH_VERSION=x.y.z-SNAPSHOT")
+} else {
+    providers.gradleProperty("PUBLISH_VERSION").orNull ?: "LOCAL"
+}
 project.extra.set("publishVersion", publishVersion)
 
 // Check if this is a SNAPSHOT version
