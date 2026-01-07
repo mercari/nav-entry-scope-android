@@ -29,13 +29,17 @@ extra["navEntryScopeVersion"] = libs.versions.navEntryScope.get()
 apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
 val hasSigningCredentials = extra["hasSigningCredentials"] as Boolean
+val isSnapshot = extra["isSnapshot"] as Boolean
 @Suppress("UNCHECKED_CAST")
 val configurePom = extra["configurePom"] as (MavenPom) -> Unit
 
 mavenPublishing {
     configure(JavaLibrary(javadocJar = JavadocJar.Javadoc(), sourcesJar = true))
 
-    if (hasSigningCredentials) {
+    // SNAPSHOTs can be published without signing; release versions require signing
+    if (isSnapshot) {
+        publishToMavenCentral()
+    } else if (hasSigningCredentials) {
         publishToMavenCentral()
         signAllPublications()
     }
