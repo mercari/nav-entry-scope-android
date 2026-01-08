@@ -5,7 +5,6 @@
 [![Latest version (lib)](https://img.shields.io/maven-central/v/com.mercari/nav-entry-scope?label=nav-entry-scope)](https://central.sonatype.com/artifact/com.mercari/nav-entry-scope)
 [![Latest version (processor)](https://img.shields.io/maven-central/v/com.mercari/nav-entry-scope-processor?label=nav-entry-scope-processor)](https://central.sonatype.com/artifact/com.mercari/nav-entry-scope-processor)
 ![Android](https://img.shields.io/badge/Platform-Android-green.svg)
-![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.0-blue.svg)
 
 This project offers an implementation for the **NavEntryScope** pattern used for sharing dependencies across multiple ViewModels on the same screen, along with a sample app.
