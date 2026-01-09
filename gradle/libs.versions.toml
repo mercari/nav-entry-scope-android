@@ -16,7 +16,7 @@ hiltDagger = "2.57.2"
 navigation = "2.9.5"
 kotlinxCoroutines = "1.10.2"
 navEntryScope = "1.0.0"
-mavenPublish = "0.35.0"
+mercariPublish = "0.0.1-SNAPSHOT"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -59,4 +59,5 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltDagger" }
-maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
+mercari-android-publish = { id = "com.mercari.android.library.publish", version.ref = "mercariPublish" }
+mercari-java-publish = { id = "com.mercari.java.library.publish", version.ref = "mercariPublish" }

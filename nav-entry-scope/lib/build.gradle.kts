@@ -1,4 +1,3 @@
-import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -6,7 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
-    alias(libs.plugins.maven.publish)
+    alias(libs.plugins.mercari.android.publish)
     id("kotlin-kapt")
 }
 
@@ -59,30 +58,16 @@ dependencies {
     testImplementation(libs.junit)
 }
 
-extra["navEntryScopeVersion"] = libs.versions.navEntryScope.get()
-apply(from = rootProject.file("gradle/publishing.gradle.kts"))
-
-val hasSigningCredentials = extra["hasSigningCredentials"] as Boolean
-val isSnapshot = extra["isSnapshot"] as Boolean
-@Suppress("UNCHECKED_CAST")
-val configurePom = extra["configurePom"] as (MavenPom) -> Unit
-
-mavenPublishing {
-    configure(AndroidSingleVariantLibrary(variant = "release", sourcesJar = true, publishJavadocJar = true))
-
-    // SNAPSHOTs can be published without signing; release versions require signing
-    if (isSnapshot) {
-        publishToMavenCentral()
-    } else if (hasSigningCredentials) {
-        publishToMavenCentral()
-        signAllPublications()
-    }
-
-    coordinates("com.mercari", "nav-entry-scope", extra["publishVersion"] as String)
-
-    pom {
-        name.set("NavEntryScope Library")
-        description.set("Navigation entry scoping library for Jetpack Compose - manages ViewModel lifecycle tied to navigation back stack entries")
-        configurePom(this)
-    }
+mercariPublishing {
+    groupId.set("com.mercari")
+    artifactId.set("nav-entry-scope")
+    displayName.set("NavEntryScope Library")
+    description.set("Navigation entry scoping library for Jetpack Compose - manages ViewModel lifecycle tied to navigation back stack entries")
+    projectUrl.set("https://github.com/mercari/nav-entry-scope-android")
+    licenseUrl.set("https://github.com/mercari/nav-entry-scope-android/blob/main/LICENSE.txt")
+    scmConnection.set("scm:git:git://github.com/mercari/nav-entry-scope-android.git")
+    scmDeveloperConnection.set("scm:git:ssh://github.com/mercari/nav-entry-scope-android.git")
+    scmUrl.set("https://github.com/mercari/nav-entry-scope-android")
+    developer("bxttx", "Luca Bettelli", "l-bettelli@mercari.com")
+    developer("rsfez", "Robin Sfez", "rsfez@mercari.com")
 }
